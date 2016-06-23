@@ -62,6 +62,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         view.originalBottomInset = self.contentInset.bottom;
         self.infiniteScrollingView = view;
         self.showsInfiniteScrolling = YES;
+        [view resetScrollViewContentInset];
     } else {
         self.infiniteScrollingView.infiniteScrollingHandler = actionHandler;
     }
@@ -296,10 +297,12 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         
         switch (newState) {
             case SVInfiniteScrollingStateStopped:
+                [self resetScrollViewContentInset];
                 [self.activityIndicatorView stopAnimating];
                 break;
                 
             case SVInfiniteScrollingStateTriggered:
+                [self setScrollViewContentInsetForInfiniteScrolling];
                 [self.activityIndicatorView startAnimating];
                 break;
                 
