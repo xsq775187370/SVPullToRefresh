@@ -96,6 +96,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
       if (self.infiniteScrollingView.isObserving) {
         [self removeObserver:self.infiniteScrollingView forKeyPath:@"contentOffset"];
         [self removeObserver:self.infiniteScrollingView forKeyPath:@"contentSize"];
+        [self.panGestureRecognizer removeTarget:self.infiniteScrollingView action:NSSelectorFromString(@"scrollViewPanGestureUpdate:")];
         [self.infiniteScrollingView resetScrollViewContentInset];
         self.infiniteScrollingView.isObserving = NO;
       }
@@ -104,6 +105,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
       if (!self.infiniteScrollingView.isObserving) {
         [self addObserver:self.infiniteScrollingView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:nil];
         [self addObserver:self.infiniteScrollingView forKeyPath:@"contentSize" options:NSKeyValueObservingOptionNew context:nil];
+        [self.panGestureRecognizer addTarget:self.infiniteScrollingView action:NSSelectorFromString(@"scrollViewPanGestureUpdate:")];
         [self.infiniteScrollingView setScrollViewContentInsetForInfiniteScrolling];
         self.infiniteScrollingView.isObserving = YES;
           
@@ -116,6 +118,13 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 - (BOOL)showsInfiniteScrolling {
     return !self.infiniteScrollingView.hidden;
 }
+
+@end
+
+
+@interface SVInfiniteScrollingView()
+
+- (void)scrollViewPanGestureUpdate:(UIPanGestureRecognizer *)gesture;
 
 @end
 
@@ -153,6 +162,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
           if (self.isObserving) {
             [scrollView removeObserver:self forKeyPath:@"contentOffset"];
             [scrollView removeObserver:self forKeyPath:@"contentSize"];
+            [scrollView.panGestureRecognizer removeTarget:self action:@selector(scrollViewPanGestureUpdate:)];
             self.isObserving = NO;
           }
         }
@@ -209,14 +219,19 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         CGFloat scrollOffsetThreshold = scrollViewContentHeight-self.scrollView.bounds.size.height;
         CGFloat yVelocity = [self.scrollView.panGestureRecognizer velocityInView:self.scrollView].y;
         
-        if(!self.scrollView.isDragging && self.state == SVInfiniteScrollingStateTriggered)
-            self.state = SVInfiniteScrollingStateLoading;
-        else if(yVelocity < 0 && contentOffset.y > scrollOffsetThreshold && self.state == SVInfiniteScrollingStateStopped && self.scrollView.isDragging)
+        if(yVelocity < 0 && contentOffset.y > scrollOffsetThreshold && self.state == SVInfiniteScrollingStateStopped && self.scrollView.isDragging)
             self.state = SVInfiniteScrollingStateTriggered;
         else if(contentOffset.y < scrollOffsetThreshold  && self.state != SVInfiniteScrollingStateStopped)
             self.state = SVInfiniteScrollingStateStopped;
     }
 }
+
+- (void)scrollViewPanGestureUpdate:(UIPanGestureRecognizer *)gesture {
+    if (gesture.state == UIGestureRecognizerStateEnded && self.state == SVInfiniteScrollingStateTriggered) {
+        self.state = SVInfiniteScrollingStateLoading;
+    }
+}
+
 
 #pragma mark - Getters
 
