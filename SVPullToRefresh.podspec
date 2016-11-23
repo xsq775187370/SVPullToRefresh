@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "SVPullToRefresh"
-  s.version      = "0.4.1"
+  s.version      = "5.0"
   s.summary      = "Give pull-to-refresh & infinite scrolling to any UIScrollView with 1 line of code. "
 
   # This description is used to generate tags and improve search results.
