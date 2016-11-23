@@ -85,6 +85,10 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 - (void)setShowsInfiniteScrolling:(BOOL)showsInfiniteScrolling {
     self.infiniteScrollingView.hidden = !showsInfiniteScrolling;
     
+    if (!self.infiniteScrollingView) {
+        return;
+    }
+    
     if(!showsInfiniteScrolling) {
       if (self.infiniteScrollingView.isObserving) {
         [self removeObserver:self.infiniteScrollingView forKeyPath:@"contentOffset"];
