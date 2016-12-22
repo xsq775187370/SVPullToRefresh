@@ -8,6 +8,7 @@
 
 #import "SVViewController.h"
 #import "SVPullToRefresh.h"
+#import "SVDemoPullToRefresh.h"
 
 @interface SVViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -25,7 +26,7 @@
     __weak SVViewController *weakSelf = self;
     
     // setup pull-to-refresh
-    [self.tableView addPullToRefreshWithActionHandler:^{
+    [self.tableView addPullToRefresh:[SVDemoPullToRefresh class] withActionHandler:^{
         [weakSelf insertRowAtTop];
     }];
         
@@ -36,6 +37,7 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     [tableView triggerPullToRefresh];
 }
 
@@ -43,7 +45,7 @@
 
 - (void)setupDataSource {
     self.dataSource = [NSMutableArray array];
-    for(int i=0; i<15; i++)
+    for(int i=0; i<2; i++)
         [self.dataSource addObject:[NSDate dateWithTimeIntervalSinceNow:-(i*90)]];
 }
 
