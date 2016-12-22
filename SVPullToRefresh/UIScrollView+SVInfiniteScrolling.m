@@ -25,7 +25,7 @@ static CGFloat const SVInfiniteScrollingViewHeight = 60;
 
 @property (nonatomic, copy) void (^infiniteScrollingHandler)(void);
 
-@property (nonatomic, strong) UIActivityIndicatorView *activityIndicatorView;
+@property (nonatomic, strong) UIImageView *loadingImageView;
 @property (nonatomic, readwrite) SVInfiniteScrollingState state;
 @property (nonatomic, strong) NSMutableArray *viewForState;
 @property (nonatomic, weak) UIScrollView *scrollView;
@@ -137,18 +137,17 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 @implementation SVInfiniteScrollingView
 
 // public properties
-@synthesize infiniteScrollingHandler, activityIndicatorViewStyle;
+@synthesize infiniteScrollingHandler;
 
 @synthesize state = _state;
 @synthesize scrollView = _scrollView;
-@synthesize activityIndicatorView = _activityIndicatorView;
+@synthesize loadingImageView = _loadingImageView;
 
 
 - (id)initWithFrame:(CGRect)frame {
     if(self = [super initWithFrame:frame]) {
         
         // default styling values
-        self.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         self.state = SVInfiniteScrollingStateStopped;
         self.enabled = YES;
@@ -174,7 +173,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 }
 
 - (void)layoutSubviews {
-    self.activityIndicatorView.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
+    self.loadingImageView.center = CGPointMake(self.bounds.size.width/2, self.bounds.size.height/2);
 }
 
 #pragma mark - Scroll View
@@ -239,18 +238,24 @@ UIEdgeInsets scrollViewOriginalContentInsets;
 
 #pragma mark - Getters
 
-- (UIActivityIndicatorView *)activityIndicatorView {
-    if(!_activityIndicatorView) {
-        _activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-        _activityIndicatorView.hidesWhenStopped = YES;
-        [self addSubview:_activityIndicatorView];
+- (UIImageView *)loadingImageView {
+    if(!_loadingImageView) {
+        _loadingImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
+        NSMutableArray *animationImages = [[NSMutableArray alloc] initWithCapacity:12];
+        for (NSInteger index = 0; index <= 12; index++) {
+            NSString *imageName = [NSString stringWithFormat:@"loading_%li", index];
+            UIImage *image = [UIImage imageNamed:imageName inBundle:[NSBundle bundleForClass:self.class] compatibleWithTraitCollection:nil];
+            [animationImages addObject:image];
+        }
+        
+        _loadingImageView.animationImages = animationImages;
+        _loadingImageView.animationRepeatCount = 0;
+        _loadingImageView.animationDuration = 0.13 * 13;
+        [self addSubview:_loadingImageView];
     }
-    return _activityIndicatorView;
+    return _loadingImageView;
 }
 
-- (UIActivityIndicatorViewStyle)activityIndicatorViewStyle {
-    return self.activityIndicatorView.activityIndicatorViewStyle;
-}
 
 #pragma mark - Setters
 
@@ -266,10 +271,6 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         [self.viewForState replaceObjectAtIndex:state withObject:viewPlaceholder];
     
     self.state = self.state;
-}
-
-- (void)setActivityIndicatorViewStyle:(UIActivityIndicatorViewStyle)viewStyle {
-    self.activityIndicatorView.activityIndicatorViewStyle = viewStyle;
 }
 
 #pragma mark -
@@ -310,23 +311,23 @@ UIEdgeInsets scrollViewOriginalContentInsets;
         [customView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
     }
     else {
-        CGRect viewBounds = [self.activityIndicatorView bounds];
+        CGRect viewBounds = [self.loadingImageView bounds];
         CGPoint origin = CGPointMake(roundf((self.bounds.size.width-viewBounds.size.width)/2), roundf((self.bounds.size.height-viewBounds.size.height)/2));
-        [self.activityIndicatorView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
+        [self.loadingImageView setFrame:CGRectMake(origin.x, origin.y, viewBounds.size.width, viewBounds.size.height)];
         
         switch (newState) {
             case SVInfiniteScrollingStateStopped:
                 [self resetScrollViewContentInset];
-                [self.activityIndicatorView stopAnimating];
+                [self.loadingImageView stopAnimating];
                 break;
                 
             case SVInfiniteScrollingStateTriggered:
                 [self setScrollViewContentInsetForInfiniteScrolling];
-                [self.activityIndicatorView startAnimating];
+                [self.loadingImageView startAnimating];
                 break;
                 
             case SVInfiniteScrollingStateLoading:
-                [self.activityIndicatorView startAnimating];
+                [self.loadingImageView startAnimating];
                 break;
             default:
                 break;

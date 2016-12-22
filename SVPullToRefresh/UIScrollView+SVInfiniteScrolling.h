@@ -31,7 +31,6 @@ typedef NS_ENUM(NSUInteger, SVInfiniteScrollingState) {
 
 @interface SVInfiniteScrollingView : UIView
 
-@property (nonatomic, readwrite) UIActivityIndicatorViewStyle activityIndicatorViewStyle;
 @property (nonatomic, readonly) SVInfiniteScrollingState state;
 @property (nonatomic, readwrite) BOOL enabled;
 
