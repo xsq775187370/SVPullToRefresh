@@ -4,6 +4,9 @@ This is a fork repo, because the orignal one is not active anymore. Pull request
 
 # SVPullToRefresh + SVInfiniteScrolling
 
+[![Cocoapods Compatible](https://img.shields.io/cocoapods/v/SVPullToRefresh.svg)](https://cocoapods.org/pods/SVPullToRefresh)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+
 These UIScrollView categories makes it super easy to add pull-to-refresh and infinite scrolling fonctionalities to any UIScrollView (or any of its subclass). Instead of relying on delegates and/or subclassing `UIViewController`, SVPullToRefresh uses the Objective-C runtime to add the following 3 methods to `UIScrollView`:
 
 ```objective-c
@@ -17,6 +20,10 @@ These UIScrollView categories makes it super easy to add pull-to-refresh and inf
 ### From CocoaPods
 
 Add `pod 'SVPullToRefresh'` to your Podfile or `pod 'SVPullToRefresh', :head` if you're feeling adventurous.
+
+### From Carthage
+
+Add `github "samvermette/SVPullToRefresh"` to your Cartfile and run `$ carthage update`.
 
 ### Manually
 
