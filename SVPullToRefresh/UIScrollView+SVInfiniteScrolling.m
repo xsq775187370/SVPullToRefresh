@@ -242,7 +242,7 @@ UIEdgeInsets scrollViewOriginalContentInsets;
     if(!_loadingImageView) {
         _loadingImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 32, 32)];
         NSMutableArray *animationImages = [[NSMutableArray alloc] initWithCapacity:12];
-        for (int index = 0; index <= 12; index++) {
+        for (int index = 1; index <= 17; index++) {
             NSString *imageName = [NSString stringWithFormat:@"loading_%d", index];
             UIImage *image = [UIImage imageNamed:imageName inBundle:[NSBundle bundleForClass:self.class] compatibleWithTraitCollection:nil];
             [animationImages addObject:image];
